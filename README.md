@@ -8,7 +8,10 @@
 
 # nonebot-plugin-mc-whitelist-controller
 
- _✨一个控制管理Minecraft服务器白名单的机器人插件**目前仍处于开发中，还并不稳定**✨_
+ _✨一个控制管理Minecraft服务器白名单的机器人插件✨_
+
+ >[!NOTE]
+ >该项目目前还处于开发中，还不属于完全体，还不是很稳定！
 
 
 <!-- <a href="./LICENSE">
