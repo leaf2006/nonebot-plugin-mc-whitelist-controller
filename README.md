@@ -10,10 +10,6 @@
 
  _✨一个控制管理Minecraft服务器白名单的机器人插件✨_
 
- > [!IMPORTANT]
- > 该项目目前还处于开发中，还不属于完全体，还不是很稳定！
-
-
 <!-- <a href="./LICENSE">
     <img src="https://img.shields.io/github/license/owner/nonebot-plugin-template.svg" alt="license">
 </a>
@@ -23,6 +19,9 @@
 <img src="https://img.shields.io/badge/python-3.9+-blue.svg" alt="python"> -->
 
 </div>
+
+ > [!NOTE]
+ > 该项目目前还处于开发中，还不属于完全体，还不是很稳定！
 
 <!-- 
 > [!NOTE]
