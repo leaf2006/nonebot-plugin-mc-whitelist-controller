@@ -8,6 +8,12 @@
 
 # nonebot-plugin-mc-whitelist-controller
 
+![GitHub License](https://img.shields.io/github/license/leaf2006/nonebot-plugin-mc-whitelist-controller?style=flat-square)
+![GitHub last commit](https://img.shields.io/github/last-commit/leaf2006/nonebot-plugin-mc-whitelist-controller?style=flat-square)
+![GitHub last commit](https://img.shields.io/github/last-commit/leaf2006/nonebot-plugin-railwaytools?style=flat-square)
+![PyPI - Version](https://img.shields.io/pypi/v/nonebot-plugin-mc-whitelist-controller?style=flat-square)
+
+
  _✨一个控制管理Minecraft服务器白名单的机器人插件✨_
 
 <!-- <a href="./LICENSE">
@@ -64,7 +70,7 @@
 在nonebot2项目插件目录下，打开命令行，输入以下安装命令
 
     pip install nonebot-plugin-mc-whitelist-controller
-    
+
 </details>
 
 <details>
@@ -119,8 +125,24 @@
 
 | 配置项 | 必填 | 默认值 | 说明 |
 |:-----:|:----:|:----:|:----:|
-|WHITELIST_PATH | 是 | 无 | 服务器whitelist.json的绝对路径 |
+| WHITELIST_PATH | 是 | 无 | 服务器whitelist.json的绝对路径 |
+| PROFILE_PATH | 否 | profile.json | 存放玩家id和QQ号的文件的绝对路径（若不存在该文件会自动创建），如果未填该配置会自动在机器人根目录创建profile.json |
 | SERVER_STATUS | 否 | offile | 填写服务器状态（正版/离线服务器）：online/offline |
+
+- WHITELIST_PATH配置示例：
+```
+# .env
+# 本示例中给出的地址为虚构地址，仅供演示
+WHITELIST_PATH=C:\Users\Minecraft\whitelist.json
+```
+
+- PROFILE_PATH配置示例：
+```
+# .env
+# 本示例中给出的地址为虚构地址，仅供演示
+PROFILE_PATH=C:\Users\Minecraft\profile.json
+```
+此处PROFILE_PATH可以是绝对路径内的任意路径，但是在路径最后必须包括文件名，即使这个文件还未被创建
 
 ## 🎉 使用
 ### 指令表

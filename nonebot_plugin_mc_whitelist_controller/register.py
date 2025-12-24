@@ -1,4 +1,5 @@
 import json
+import os
 from nonebot import on_command   # type: ignore
 from nonebot.adapters.onebot.v11 import Message, MessageSegment   # type: ignore
 from nonebot.plugin import PluginMetadata  # type: ignore
@@ -76,7 +77,18 @@ async def handle_register_id(args: Message = CommandArg(),event: Event = None):
             # 如果write_status(写入状态)为True，代表玩家名已经成功写入whitelist.json，那么就接着将玩家名和QQ号写入profile.json；若没有成功写入，则不进行上述步骤    
             if write_status == True:
 
-                try:
+                profile_path = plugin_config.profile_path
+
+                if not os.path.exists(profile_path):
+                    # 没有该文件则依照profile_path创建默认文件
+                    default_data = []
+                    with open(profile_path, 'w', encoding='utf-8') as file:
+                        json.dump(default_data,file,indent=2)
+                
+                else:
+                    pass
+
+                try: # 往profile.json写入玩家id和qq号
                     with open(profile_path, 'r', encoding='utf-8') as profile:
                         profile_detail = json.load(profile)
                     
@@ -89,7 +101,7 @@ async def handle_register_id(args: Message = CommandArg(),event: Event = None):
                         json.dump(profile_detail,profile,indent=2)
                     
                 except FileNotFoundError:
-                    await register_id.finish("无法向profile.json中添加数据，请检查是否误删插件目录中nonebot_plugin_mc_whitelist_controller/data/profile.json文件！")
+                    await register_id.finish(f"无法添加数据，请检查{profile_path}文件是否存在！")
                 except json.JSONDecodeError:
                     await register_id.finish(JSONDecodeError_alert)
             
