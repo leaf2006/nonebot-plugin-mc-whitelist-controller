@@ -153,7 +153,7 @@ PROFILE_PATH=C:\Users\Minecraft\profile.json
 
 
 >[!IMPORTANT]
->在首次使用本插件前，或切换过SERVER_STATUS参数后，请务必手动清除whitelist.json中除"[]"号外的所有内容，防止出现错误；且非必要情况请不要修改nonebot_plugin_mc_whitelist_controller/data/profile.json文件，以免出现问题！
+>在首次使用本插件前，或切换过SERVER_STATUS参数后，请务必手动清除whitelist.json中除"[]"号外的所有内容，防止出现错误
 
 ### 效果图
 
