@@ -128,6 +128,7 @@
 | WHITELIST_PATH | 是 | 无 | 服务器whitelist.json的绝对路径 |
 | PROFILE_PATH | 否 | profile.json | 存放玩家id和QQ号的文件的绝对路径（若不存在该文件会自动创建），如果未填该配置会自动在机器人根目录创建profile.json |
 | SERVER_STATUS | 否 | offile | 填写服务器状态（正版/离线服务器）：online/offline |
+| ADMINISTRATOR_ID | 否 | 0 | 本插件管理员账户QQ号，可以查看玩家信息 |
 
 - WHITELIST_PATH配置示例：
 ```
@@ -150,6 +151,7 @@ PROFILE_PATH=C:\Users\Minecraft\profile.json
 |:-----:|:----:|:----:|:----:|:----:|
 | /注册 或 /register + [玩家id] | 群员 | 否 | 群聊 | 向服务器白名单注册玩家信息 |
 | /指令列表 | 群员 | 否 | 群聊 | 查看指令列表 |
+| /玩家列表 | 注册管理员 | 是 | 私聊或群聊@ | 查看玩家信息，仅已在.env注册过的管理员可用 |
 
 
 >[!IMPORTANT]
