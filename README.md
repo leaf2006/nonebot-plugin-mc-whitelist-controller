@@ -63,6 +63,8 @@
 
 这是一个控制管理Minecraft服务器白名单的机器人插件，将mc服务器中的玩家id与QQ号绑定，实现对服务器内所有玩家的追根溯源，支持正版服务器和离线服务器。本插件可以在QQ中将玩家id注册入服务器白名单，同时会生成一个包含每个玩家id与其绑定的QQ号信息的json文件，供服务器管理员参看。
 
+**在使用前，请务必仔细阅读README.md中的“使用前配置”与“Bot配置”内容，以免出现问题。让这个Bot达到应有的效果，需要你对你的mc服务器进行一些配置，并且给Bot填写一些必填的首选项。**
+
 ## 💿 安装
 
 <details open>
@@ -81,45 +83,23 @@
 
 </details>
 
-<!-- <details open>
-<summary>使用pip安装</summary>
 
-    nb plugin install nonebot-plugin-template
+## ⚠️使用前配置
 
-</details> -->
+**这部分内容很重要，跟Bot配置一样重要！因为在一般情况下，mc服务器的白名单在更新后是不会立刻生效的，在什么都不做的情况下，需要你在服务器中输入`/whitelist reload`指令才会使更改后的白名单生效。这里就需要做一些操作让服务器自动重载白名单**
 
-<!-- <details> -->
-<!-- <summary>使用包管理器安装</summary>
-在 nonebot2 项目的插件目录下, 打开命令行, 根据你使用的包管理器, 输入相应的安装命令
+- **给服务器添加定时/计划任务，定期执行`/whitelist reload`指令（最简单，推荐）**
 
-<details>
-<summary>pip</summary>
+很多人会选择使用服务器控制面板或租用面板服，大部分的面板或面板服都支持添加定时/计划任务。可以添加一个任务，每900秒（15分钟）执行一次`/whitelist reload`指令，实现定时自动重载白名单的功能。
 
-    pip install nonebot-plugin-template
-</details>
-<details>
-<summary>pdm</summary>
+![server-timer](https://raw.githubusercontent.com/leaf2006/image/master/img/server-timer.png)
 
-    pdm add nonebot-plugin-template
-</details>
-<details>
-<summary>poetry</summary>
+- **给服务器添加智能重载白名单mod（最智能，还在试验）**
 
-    poetry add nonebot-plugin-template
-</details>
-<details>
-<summary>conda</summary>
+我同时为该插件编写了一个基于Fabric的mod：<a href="https://github.com/leaf2006/minecraft-whitelist-watcher-mod">Minecraft Whitelist Watcher</a> ，这个专为Fabric服务端的mod可以实现实时监视白名单，白名单文件内容发生变动时会自动为服务器重载白名单。但这个mod仍在开发，目前支持的mc版本较少，本人正在尽快更新使其支持更多版本。
 
-    conda install nonebot-plugin-template
-</details>
 
-打开 nonebot2 项目根目录下的 `pyproject.toml` 文件, 在 `[tool.nonebot]` 部分追加写入
-
-    plugins = ["nonebot_plugin_template"]
-
-</details> -->
-
-## ⚙️ 配置
+## ⚙️ Bot配置
 
 在 nonebot2 项目的`.env`文件中添加下表中的必填配置
 
@@ -150,6 +130,7 @@ PROFILE_PATH=C:\Users\Minecraft\profile.json
 | 指令 | 权限 | 需要@ | 范围 | 说明 |
 |:-----:|:----:|:----:|:----:|:----:|
 | /注册 或 /register + [玩家id] | 群员 | 否 | 群聊 | 向服务器白名单注册玩家信息 |
+| /注销 或 /unregister + [玩家id] | 群员 | 否| 群聊 | 注销已注册的玩家信息 |
 | /指令列表 | 群员 | 否 | 群聊 | 查看指令列表 |
 | /玩家列表 | 注册管理员 | 是 | 私聊或群聊@ | 查看玩家信息，仅已在.env注册过的管理员可用 |
 
@@ -157,13 +138,15 @@ PROFILE_PATH=C:\Users\Minecraft\profile.json
 >[!IMPORTANT]
 >在首次使用本插件前，或切换过SERVER_STATUS参数后，请务必手动清除whitelist.json中除"[]"号外的所有内容，防止出现错误
 
-### 效果图
+### 效果
 
-**注：以下示例展示的是在离线服务器环境下的实机演示**
+场景：当你向机器人注册玩家id：
 
-![help](https://raw.githubusercontent.com/leaf2006/image/master/img/Screenshot_2025-12-23-15-28-22-99_cb819d8fa60af39fdbc84f6c72b4cf1c.jpg "/help")
-
-![/register](https://raw.githubusercontent.com/leaf2006/image/master/img/Screenshot_2025-12-23-15-28-08-00_cb819d8fa60af39fdbc84f6c72b4cf1c.jpg "/注册")
+```
+example:
+🤵：/注册 leaf2006
+🤖：成功注册玩家leaf2006到白名单！
+```
 
 此时whitelist.json会自动添加以下语句：
 ```json
@@ -188,6 +171,8 @@ PROFILE_PATH=C:\Users\Minecraft\profile.json
     }
 ]
 ```
+
+*注：以上示例为离线服务器场景*
 
 <div align="center">
 

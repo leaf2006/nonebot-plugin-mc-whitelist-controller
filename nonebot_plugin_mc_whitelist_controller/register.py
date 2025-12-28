@@ -20,7 +20,6 @@ async def handle_register_id(args: Message = CommandArg(),event: Event = None):
     if input_id := args.extract_plain_text():
 
         server_status = plugin_config.server_status
-
         qq_number = event.get_user_id()
         duplicate_registration_status = check_username_exists(input_id) # 检查用户名是否被注册。被注册：True；未被注册：False
 
@@ -28,7 +27,7 @@ async def handle_register_id(args: Message = CommandArg(),event: Event = None):
         JsonFormaterror_alert = "JSON文件结构不正确，应该是一个数组。请联系服务器维护者"
         JSONDecodeError_alert = "JSON 格式错误，请确保文件是有效的 JSON 格式"
 
-        
+
         if duplicate_registration_status == False:
             
             if server_status == "offline": # 离线模式
@@ -52,7 +51,6 @@ async def handle_register_id(args: Message = CommandArg(),event: Event = None):
 
             # 写入whitelist.json
             whitelist_path = plugin_config.whitelist_path
-            profile_path = 'nonebot_plugin_mc_whitelist_controller/data/profile.json'
             qq_number = event.get_user_id()
             try:
                 with open(whitelist_path, 'r', encoding='utf-8') as whitelist:

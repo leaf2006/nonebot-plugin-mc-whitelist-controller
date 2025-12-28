@@ -1,6 +1,6 @@
 [project]
 name = "nonebot-plugin-mc-whitelist-controller"
-version = "0.9.0"
+version = "0.9.5"
 description = "nonebot-plugin-mc-whitelist-controller"
 readme = "README.md"
 license = "MIT"
