@@ -15,7 +15,7 @@ profile_list = on_command("玩家列表" , aliases={"list"} , priority=5 , block
 @profile_list.handle()
 async def handle_profile_list(args: Message = CommandArg(),event: Event = None):
     qq_number = event.get_user_id()
-    administrator_id = plugin_config.administrator_ids
+    administrator_id = plugin_config.administrator_id
     
     if administrator_id == [0]:
         await profile_list.finish("你还未启用“查询玩家列表”功能，请去.env配置页面给“ADMINISTRATOR_ID”配置项填写管理员的QQ号，随后方可使用！")

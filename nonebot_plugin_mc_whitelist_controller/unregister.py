@@ -83,7 +83,7 @@ async def handle_unregister_id(args: Message = CommandArg() , event: Event = Non
                 profile_Unregister_result = remove_from_profile(input_id)
                 whitelist_Unregister_result = remove_from_whitelist(input_id)
                 if profile_Unregister_result == True and whitelist_Unregister_result == True:
-                    await unregister_id.finish(f"玩家id{input_id}注销成功！")
+                    await unregister_id.finish(f"玩家{input_id}注销成功！")
                 else:
                     await unregister_id.finish("出现错误，请联系服务器维护者！")
 
