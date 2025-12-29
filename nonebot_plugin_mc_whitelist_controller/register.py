@@ -1,5 +1,6 @@
 import json
 import os
+import re
 from nonebot import on_command   # type: ignore
 from nonebot.adapters.onebot.v11 import Message, MessageSegment   # type: ignore
 from nonebot.plugin import PluginMetadata  # type: ignore
@@ -15,9 +16,17 @@ plugin_config = get_plugin_config(Config)
 
 register_id = on_command("注册" , aliases={"register"} , priority=5 , block=True)
 
+def validate_playerid(text):
+    """验证玩家id只包含字母、数字和下划线"""
+    pattern = re.compile(r'^[a-zA-Z0-9_]+$')
+    return bool(pattern.match(text))
 @register_id.handle()
 async def handle_register_id(args: Message = CommandArg(),event: Event = None):
     if input_id := args.extract_plain_text():
+        if not validate_playerid(input_id):
+            await register_id.finish("玩家id只能包含英文字母、数字和下划线")
+        else:
+            pass
 
         server_status = plugin_config.server_status
         qq_number = event.get_user_id()

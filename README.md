@@ -108,7 +108,7 @@
 | WHITELIST_PATH | 是 | 无 | 服务器whitelist.json的绝对路径 |
 | PROFILE_PATH | 否 | profile.json | 存放玩家id和QQ号的文件的绝对路径（若不存在该文件会自动创建），如果未填该配置会自动在机器人根目录创建profile.json |
 | SERVER_STATUS | 否 | offile | 填写服务器状态（正版/离线服务器）：online/offline |
-| ADMINISTRATOR_ID | 否 | 0 | 本插件管理员账户QQ号，可以查看玩家信息 |
+| ADMINISTRATOR_ID | 否 | [0] | 本插件管理员账户QQ号，可以查看玩家信息，可设置多个管理员 |
 
 - WHITELIST_PATH配置示例：
 ```
@@ -124,6 +124,13 @@ WHITELIST_PATH=C:\Users\Minecraft\whitelist.json
 PROFILE_PATH=C:\Users\Minecraft\profile.json
 ```
 此处PROFILE_PATH可以是绝对路径内的任意路径，但是在路径最后必须包括文件名，即使这个文件还未被创建
+
+- ADMINISTRATOR_ID配置实例：
+```
+# .env
+# 本示例中给出QQ号为虚构QQ号，仅供演示
+ADMINISTRATOR_ID=[1111111111,2222222222]
+```
 
 ## 🎉 使用
 ### 指令表
@@ -173,6 +180,10 @@ example:
 ```
 
 *注：以上示例为离线服务器场景*
+
+## 旧版版本
+
+下载或使用旧版版本请前往<a href="https://pypi.org/project/nonebot-plugin-mc-whitelist-controller/#history">Pypi</a>
 
 <div align="center">
 
