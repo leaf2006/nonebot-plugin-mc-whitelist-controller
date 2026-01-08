@@ -3,20 +3,17 @@ import os
 from nonebot import on_command   # type: ignore
 from nonebot.adapters.onebot.v11 import Message, MessageSegment   # type: ignore
 from nonebot.plugin import PluginMetadata  # type: ignore
-from .config import Config
-from nonebot import get_plugin_config
 from nonebot.adapters.onebot.v11 import Event
 from nonebot.params import CommandArg  # type: ignore
 from nonebot.rule import to_me  # type: ignore
 from .registration_checker import check_profile_exists,get_player_in_profile
-
-plugin_config = get_plugin_config(Config)
+from .data_source import user_config as uc
 
 unregister_id = on_command("注销", aliases={"unregister"}, priority=5, block=True)
 
 def remove_from_whitelist(player_name: str) -> bool:
     """从whitelist.json中移除指定玩家"""
-    whitelist_path = plugin_config.whitelist_path
+    whitelist_path = uc.whitelist_path
     try:
         with open(whitelist_path, 'r', encoding='utf-8') as file:
             data = json.load(file)
@@ -43,7 +40,7 @@ def remove_from_whitelist(player_name: str) -> bool:
 
 def remove_from_profile(player_name: str) -> bool:
     """从profile.json中移除指定玩家"""
-    profile_path = plugin_config.profile_path
+    profile_path = uc.profile_path
     try:
         with open(profile_path, 'r', encoding='utf-8') as file:
             data = json.load(file)
@@ -72,12 +69,13 @@ async def handle_unregister_id(args: Message = CommandArg() , event: Event = Non
     if input_id := args.extract_plain_text():
 
         qq_number = event.get_user_id()
+        administrator_id = uc.administrator_id
         duplicate_registration_status = check_profile_exists(input_id)
         
         if duplicate_registration_status == True:
             player_profile = get_player_in_profile(input_id)
-            if qq_number != player_profile.get('qq'):
-                await unregister_id.finish("您没有权限注销此玩家，只能注销自己的玩家id！")
+            if int(qq_number) != player_profile.get('qq') and int(qq_number) not in administrator_id:
+                await unregister_id.finish("您没有权限注销此玩家，只有该玩家自身或管理员能注销该id！")
             
             else:
                 profile_Unregister_result = remove_from_profile(input_id)

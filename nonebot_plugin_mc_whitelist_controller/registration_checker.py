@@ -1,15 +1,13 @@
 import json
-from .config import Config
-from nonebot import get_plugin_config
+from .data_source import user_config as uc
 
-plugin_config = get_plugin_config(Config)
 def check_username_exists(username: str) -> str:
     """
     检查玩家名是否已经被注册过，注册过则返回True，反则返回False
     """
 
     try:
-        path = plugin_config.whitelist_path
+        path = uc.whitelist_path
         with open(path, 'r', encoding='utf-8') as file:
             data = json.load(file)
             
@@ -39,7 +37,7 @@ def check_profile_exists(username: str) -> str:
     """
 
     try:
-        path = plugin_config.profile_path
+        path = uc.profile_path
         with open(path, 'r', encoding='utf-8') as file:
             data = json.load(file)
             
@@ -65,7 +63,7 @@ def check_profile_exists(username: str) -> str:
 
 def get_player_in_profile(player_name: str):
     """在profile.json中查找玩家数据"""
-    profile_path = plugin_config.profile_path
+    profile_path = uc.profile_path
     try:
         with open(profile_path, 'r', encoding='utf-8') as file:
             data = json.load(file)

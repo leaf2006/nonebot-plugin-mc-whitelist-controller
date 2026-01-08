@@ -4,18 +4,17 @@ import re
 from nonebot import on_command   # type: ignore
 from nonebot.adapters.onebot.v11 import Message, MessageSegment   # type: ignore
 from nonebot.plugin import PluginMetadata  # type: ignore
-from .config import Config
-from nonebot import get_plugin_config
 from nonebot.adapters.onebot.v11 import Event
 from nonebot.params import CommandArg  # type: ignore
 from nonebot.rule import to_me  # type: ignore
 from .get_uuid import get_offline_uuid,get_online_uuid
 from .registration_checker import check_username_exists
+from nonebot import require
+from pathlib import Path
+from .data_source import user_config as uc
 
-plugin_config = get_plugin_config(Config)
 
 register_id = on_command("注册" , aliases={"register"} , priority=5 , block=True)
-
 def validate_playerid(text):
     """验证玩家id只包含字母、数字和下划线"""
     pattern = re.compile(r'^[a-zA-Z0-9_]+$')
@@ -28,7 +27,7 @@ async def handle_register_id(args: Message = CommandArg(),event: Event = None):
         else:
             pass
 
-        server_status = plugin_config.server_status
+        server_status = uc.server_status
         qq_number = event.get_user_id()
         duplicate_registration_status = check_username_exists(input_id) # 检查用户名是否被注册。被注册：True；未被注册：False
 
@@ -39,7 +38,7 @@ async def handle_register_id(args: Message = CommandArg(),event: Event = None):
 
         if duplicate_registration_status == False:
             
-            if server_status == "offline": # 离线模式
+            if server_status == "offline" or server_status.strip() == '': # 离线模式
                 # 获取玩家name与uuid并编入json
                 player_uuid = get_offline_uuid(input_id)
 
@@ -59,7 +58,13 @@ async def handle_register_id(args: Message = CommandArg(),event: Event = None):
             }
 
             # 写入whitelist.json
-            whitelist_path = plugin_config.whitelist_path
+            whitelist_path = uc.whitelist_path
+
+            if not whitelist_path or whitelist_path.strip() == '':
+                await register_id.finish("未找到白名单，请检查是否在配置文件中添加了正确的whitelist.json文件路径！")
+            else:
+                pass
+
             qq_number = event.get_user_id()
             try:
                 with open(whitelist_path, 'r', encoding='utf-8') as whitelist:
@@ -77,14 +82,14 @@ async def handle_register_id(args: Message = CommandArg(),event: Event = None):
                 await register_id.send(f"成功注册玩家{input_id}到白名单！")
             
             except FileNotFoundError:
-                await register_id.finish("未找到白名单，请检查是否在.env中添加了正确的whitelist.json文件路径！")
+                await register_id.finish("未找到白名单，请检查是否在配置文件中添加了正确的whitelist.json文件路径！")
             except json.JSONDecodeError:
                 await register_id.finish(JSONDecodeError_alert)
 
             # 如果write_status(写入状态)为True，代表玩家名已经成功写入whitelist.json，那么就接着将玩家名和QQ号写入profile.json；若没有成功写入，则不进行上述步骤    
             if write_status == True:
 
-                profile_path = plugin_config.profile_path
+                profile_path = uc.profile_path
 
                 if not os.path.exists(profile_path):
                     # 没有该文件则依照profile_path创建默认文件

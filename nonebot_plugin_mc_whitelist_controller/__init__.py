@@ -6,11 +6,13 @@ from nonebot.plugin import PluginMetadata
 from .register import register_id
 from .unregister import unregister_id
 from .profile import profile_list
-from .config import Config
+from .data_source import user_config as uc
 from nonebot import logger
+from nonebot import require
+from pathlib import Path
 
 __plugin_meta__ = PluginMetadata(
-    name="mc服务器白名单在线注册器",
+    name="mc服务器白名单管理工具",
     description="这是一个控制管理Minecraft服务器白名单的机器人插件，将mc服务器中的玩家id与QQ号绑定，实现对服务器内所有玩家的追根溯源",
     usage="""
     /注册 + [玩家id] - 向服务器白名单注册玩家信息（会自动获取发消息者的QQ号进行绑定）
@@ -23,9 +25,6 @@ __plugin_meta__ = PluginMetadata(
 
     homepage="https://github.com/leaf2006/nonebot-plugin-mc-whitelist-controller",
     # 发布必填。
-
-    config=Config,
-    # 插件配置项类，如无需配置可不填写。
 
     supported_adapters={"~onebot.v11"},
     # 支持的适配器集合，其中 `~` 在此处代表前缀 `nonebot.adapters.`，其余适配器亦按此格式填写。
@@ -56,9 +55,27 @@ async def handle_information_helper():
 # 警告，启动时会显示一遍
 warning_info = """
 ****************************************************************
-在首次使用本插件前，或切换过SERVER_STATUS参数后，请务必手动清除whitelist.json中除"[]"号外的所有内容，防止出现错误！
+mc服务器白名单控制器，首次使用请仔细阅读GitHub Repo中的README
+在首次使用本插件前，或切换过server_status参数后，请务必手动清除whitelist.json中除"[]"号外的所有内容，防止出现错误！
 **************************************************************** 
 """
 
 logger.warning(warning_info)
+
+if not uc.whitelist_path or uc.whitelist_path.strip() == '':
+    logger.warning("whitelist_path配置项未配置或不存在，会影响插件正常运行，请及时配置！")
+else:
+    logger.info(f"whitelist_path:{uc.whitelist_path}")
+if not uc.profile_path or uc.profile_path.strip() == '':
+    logger.warning("profile_path未配置，已自动使用localstore默认data_dir")
+else:
+    logger.info(f"profile_path:{uc.profile_path}")
+if not uc.server_status or uc.server_status.strip() == '':
+    logger.warning("server_status配置项未配置或不存在，已使用offline配置，会影响插件正常运行，请及时配置！")
+else:
+    logger.info(f"server_status:{uc.server_status}")
+if not uc.administrator_id or (isinstance(uc.administrator_id, list) and len(uc.administrator_id) == 0):
+    logger.info("管理员未配置")
+else:
+    logger.info(f"administrator_id:{uc.administrator_id}")
 

@@ -16,54 +16,27 @@
 
  _✨一个控制管理Minecraft服务器白名单的机器人插件✨_
 
-<!-- <a href="./LICENSE">
-    <img src="https://img.shields.io/github/license/owner/nonebot-plugin-template.svg" alt="license">
-</a>
-<a href="https://pypi.python.org/pypi/nonebot-plugin-template">
-    <img src="https://img.shields.io/pypi/v/nonebot-plugin-template.svg" alt="pypi">
-</a>
-<img src="https://img.shields.io/badge/python-3.9+-blue.svg" alt="python"> -->
-
 </div>
 
- > [!NOTE]
- > 该项目目前还处于开发中，还不属于完全体，还不是很稳定！
+ <!-- > [!NOTE]
+ > 该项目目前还处于开发中，还不属于完全体，还不是很稳定！ -->
 
-<!-- 
-> [!NOTE]
-> 模板库中自带了一个发布工作流, 你可以使用此工作流自动发布你的插件到 pypi
-
-<details>
-<summary>配置发布工作流</summary>
-
-1. 前往 https://pypi.org/manage/account/#api-tokens 并创建一个新的 API 令牌。创建成功后不要关闭页面，不然你将无法再次查看此令牌。
-2. 在单独的浏览器选项卡或窗口中，打开 [Actions secrets and variables](./settings/secrets/actions) 页面。你也可以在 Settings - Secrets and variables - Actions 中找到此页面。
-3. 点击 New repository secret 按钮，创建一个名为 `PYPI_API_TOKEN` 的新令牌，并从第一步复制粘贴令牌。
-
-</details> -->
-
-<!-- > [!IMPORTANT]
-> 这个发布工作流需要 pyproject.toml 文件, 并且只支持 [PEP 621](https://peps.python.org/pep-0621/) 标准的 pyproject.toml 文件 -->
-
-<!-- <details>
-<summary>触发发布工作流</summary>
-从本地推送任意 tag 即可触发。
-
-创建 tag:
-
-    git tag <tag_name>
-
-推送本地所有 tag:
-
-    git push origin --tags
-
-</details> -->
 
 ## 📖 介绍
 
 这是一个控制管理Minecraft服务器白名单的机器人插件，将mc服务器中的玩家id与QQ号绑定，实现对服务器内所有玩家的追根溯源，支持正版服务器和离线服务器。本插件可以在QQ中将玩家id注册入服务器白名单，同时会生成一个包含每个玩家id与其绑定的QQ号信息的json文件，供服务器管理员参看。
 
 **在使用前，请务必仔细阅读README.md中的“使用前配置”与“Bot配置”内容，以免出现问题。让这个Bot达到应有的效果，需要你对你的mc服务器进行一些配置，并且给Bot填写一些必填的首选项。**
+
+## 🔨 依赖
+
+- Python >= 3.9
+
+需要安装以下依赖库：
+
+- httpx >= 0.22.0
+
+- nonebot-plugin-localstore >= 0.7.4
 
 ## 💿 安装
 
@@ -101,35 +74,64 @@
 
 ## ⚙️ Bot配置
 
-在 nonebot2 项目的`.env`文件中添加下表中的必填配置
+在配置之前，我建议您在实装完插件后先`nb run`一下Bot，然后再关掉
+
+本插件使用<a href="https://github.com/nonebot/plugin-localstore">**nonebot-plugin-localstore**</a>插件存储配置文件，本插件配置文件名为`config.json`，一般来说，本插件的配置文件会位于：
+
+- Windows:`C:\Users\<username>\AppData\Roaming\nonebot2\nonebot_plugin_mc_whitelist_controller`
+- Linux:`~/.config/nonebot2/nonebot_plugin_mc_whitelist_controller`
+
+如果还是不清楚在哪里，可以在Bot根目录执行`nb localstore`命令查看。
+
+如果您按照上述步骤，在配置前已经运行过一次Bot了的话，本插件会自动在上述目录里创建`config.json`文件，并已在文件内创建了模板，您可以前往上述目录，打开该文件填写相关配置项了。如果上述目录内没有该文件，您可以手动创建`config.json`文件，**并按照一下要求配置**：
 
 | 配置项 | 必填 | 默认值 | 说明 |
 |:-----:|:----:|:----:|:----:|
-| WHITELIST_PATH | 是 | 无 | 服务器whitelist.json的绝对路径 |
-| PROFILE_PATH | 否 | profile.json | 存放玩家id和QQ号的文件的绝对路径（若不存在该文件会自动创建），如果未填该配置会自动在机器人根目录创建profile.json |
-| SERVER_STATUS | 否 | offile | 填写服务器状态（正版/离线服务器）：online/offline |
-| ADMINISTRATOR_ID | 否 | [0] | 本插件管理员账户QQ号，可以查看玩家信息，可设置多个管理员 |
+| whitelist_path | 是 | 无 | 服务器whitelist.json的绝对路径 |
+| profile_path | 否 | 无 | 存放玩家id和QQ号的文件的绝对路径（若不存在该文件会自动创建），如果未填该配置会自动依据localstore在默认的目录内创建一个profile.json |
+| server_status | 否 | offile | 填写服务器状态（正版/离线服务器）：online/offline |
+| administrator_id | 否 | [ ] | 本插件管理员账户QQ号，可以查看玩家信息，可设置多个管理员 |
 
-- WHITELIST_PATH配置示例：
-```
-# .env
-# 本示例中给出的地址为虚构地址，仅供演示
-WHITELIST_PATH=C:\Users\Minecraft\whitelist.json
+- 配置文件json模板
+
+```json
+// config.json
+
+{
+	"whitelist_path": "",
+	"profile_path": "profile.json",
+	"server_status": "offline",
+	"administrator_id": []
+}
 ```
 
-- PROFILE_PATH配置示例：
+- whitelist_path配置示例：
+```json
+// config.json
+// 本示例中给出的地址为虚构地址，仅供演示
+"whitelist_path": "C:\\Users\\Minecraft\\whitelist.json"
 ```
-# .env
-# 本示例中给出的地址为虚构地址，仅供演示
-PROFILE_PATH=C:\Users\Minecraft\profile.json
-```
-此处PROFILE_PATH可以是绝对路径内的任意路径，但是在路径最后必须包括文件名，即使这个文件还未被创建
 
-- ADMINISTRATOR_ID配置实例：
+>[!IMPORTANT]
+>填写该配置项，以及下面的profile_path配置项时，请务必不要使用`\`分隔，改用``\\``或`/`，防止出错
+
+- profile_path配置示例：
+```json
+// config.json
+// 本示例中给出的地址为虚构地址，仅供演示
+"PROFILE_PATH": "C:\\Users\\Minecraft\\profile.json"
 ```
-# .env
-# 本示例中给出QQ号为虚构QQ号，仅供演示
-ADMINISTRATOR_ID=[1111111111,2222222222]
+此处profile_path可以是绝对路径内的任意路径，但是在路径最后必须包括文件名，即使这个文件还未被创建。在本插件如果不配置该配置项，则会根据localstore在以下位置默认创建一个profile.json：
+
+Windows:`C:\Users\<username>\AppData\Local\nonebot2\nonebot_plugin_mc_whitelist_controller`
+
+Linux:`~/.local/share/nonebot2/nonebot_plugin_mc_whitelist_controller`
+
+- administrator_id配置实例：
+```json
+// config.json
+// 本示例中给出QQ号为虚构QQ号，仅供演示
+"administrator_id": [1111111111,2222222222]
 ```
 
 ## 🎉 使用
@@ -139,11 +141,11 @@ ADMINISTRATOR_ID=[1111111111,2222222222]
 | /注册 或 /register + [玩家id] | 群员 | 否 | 群聊 | 向服务器白名单注册玩家信息 |
 | /注销 或 /unregister + [玩家id] | 群员 | 否| 群聊 | 注销已注册的玩家信息 |
 | /指令列表 | 群员 | 否 | 群聊 | 查看指令列表 |
-| /玩家列表 | 注册管理员 | 是 | 私聊或群聊@ | 查看玩家信息，仅已在.env注册过的管理员可用 |
+| /玩家列表 | 注册管理员 | 是 | 私聊或群聊@ | 查看玩家信息，仅已在配置文件中注册过的管理员可用 |
 
 
 >[!IMPORTANT]
->在首次使用本插件前，或切换过SERVER_STATUS参数后，请务必手动清除whitelist.json中除"[]"号外的所有内容，防止出现错误
+>在首次使用本插件前，或切换过server_status参数后，请务必手动清除whitelist.json中除"[]"号外的所有内容，防止出现错误
 
 ### 效果
 
@@ -178,6 +180,8 @@ example:
     }
 ]
 ```
+
+随后，在该白名单之外的玩家便无法进入服务器了，您也可以实现对服务器内所有玩家的追根溯源
 
 *注：以上示例为离线服务器场景*
 
