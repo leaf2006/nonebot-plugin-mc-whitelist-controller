@@ -1,6 +1,6 @@
 [project]
 name = "nonebot-plugin-mc-whitelist-controller"
-version = "1.0.2"
+version = "1.0.4"
 description = "nonebot-plugin-mc-whitelist-controller"
 readme = "README.md"
 license = "MIT"
@@ -33,7 +33,7 @@ nonebot-adapter-onebot = [
 
 [tool.nonebot.plugins]
 "@local" = []
-nonebot-plugin-localstore = ["nonebot_plugin_localstore"]
+
 [tool.ruff]
 line-length = 88
 target-version = "py39"

@@ -3,6 +3,7 @@ import json
 import os
 from pathlib import Path
 
+require("nonebot_plugin_localstore")
 import nonebot_plugin_localstore as store
 
 class user_config:
