@@ -8,7 +8,7 @@ import nonebot_plugin_localstore as store
 
 class user_config:
     config_dir = store.get_plugin_config_dir() # 插件配置文件存储位置
-    config_file_path = Path(store.get_config_file(config_dir, "config.json"))  # 将字符串转换为Path对象
+    config_file_path = config_dir / "config.json" # 插件配置文件
 
     data_dir = store.get_plugin_data_dir() # 插件生成的玩家profile存储位置
     data_file_path = Path(store.get_data_file(data_dir, "profile.json"))
