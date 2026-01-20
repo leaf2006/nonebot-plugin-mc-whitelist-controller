@@ -11,7 +11,7 @@ class user_config:
     config_file_path = config_dir / "config.json" # 插件配置文件
 
     data_dir = store.get_plugin_data_dir() # 插件生成的玩家profile存储位置
-    data_file_path = Path(store.get_data_file(data_dir, "profile.json"))
+    data_file_path = data_dir / "profile.json"
 
     if not config_file_path.exists():
         default_data = {
