@@ -6,6 +6,7 @@ from nonebot.plugin import PluginMetadata
 from .register import register_id
 from .unregister import unregister_id
 from .profile import profile_list
+from .server_info import server_info
 from .data_source import user_config as uc
 from nonebot import logger
 from nonebot import require
@@ -43,9 +44,10 @@ async def handle_information_helper():
         "✨这是一个控制管理Minecraft服务器白名单的机器人插件，将mc服务器中的玩家id与QQ号绑定，实现对服务器内所有玩家的追根溯源，支持正版服务器和离线服务器。本插件可以在QQ中将玩家id注册入服务器白名单，同时会生成一个包含每个玩家id与其绑定的QQ号信息的json文件，供服务器管理员参看。✨\n \n",
         "✍指令列表：✍ \n",
         "① /注册 或 /register + [玩家id]：向服务器白名单注册玩家信息（会自动获取发消息者的QQ号进行绑定） \n",
-        "② /注销 或 /unregister + [玩家id]：注销已注册的玩家信息，注销后将无法进入服务器，直至再次注册",
+        "② /注销 或 /unregister + [玩家id]：注销已注册的玩家信息，注销后将无法进入服务器，直至再次注册\n",
         "③ /指令列表：查看帮助信息 \n",
-        "④ /玩家列表：管理员专用指令，查看已注册玩家信息 \n \n",
+        "④ /服务器信息：查看服务器状态与在线玩家\n",
+        "⑤ /玩家列表：管理员专用指令，查看已注册玩家信息 \n \n",
         "Powered by Nonebot2\n",
         "Copyright © Leaf developer 2023-2026"
     ]) #type:ignore
@@ -62,20 +64,23 @@ mc服务器白名单控制器，首次使用请仔细阅读GitHub Repo中的READ
 
 logger.warning(warning_info)
 
-if not uc.whitelist_path or uc.whitelist_path.strip() == '':
-    logger.warning("whitelist_path配置项未配置或不存在，会影响插件正常运行，请及时配置！")
-else:
-    logger.info(f"whitelist_path:{uc.whitelist_path}")
-if not uc.profile_path or uc.profile_path.strip() == '':
-    logger.warning("profile_path未配置，已自动使用localstore默认data_dir")
-else:
-    logger.info(f"profile_path:{uc.profile_path}")
-if not uc.server_status or uc.server_status.strip() == '':
-    logger.warning("server_status配置项未配置或不存在，已使用offline配置，会影响插件正常运行，请及时配置！")
-else:
-    logger.info(f"server_status:{uc.server_status}")
-if not uc.administrator_id or (isinstance(uc.administrator_id, list) and len(uc.administrator_id) == 0):
+# 启动时校验关键配置并提示（key, 缺失时提示语）
+config_checks = [
+    ("whitelist_path", "whitelist_path配置项未配置或不存在，会影响插件正常运行，请及时配置！"),
+    ("profile_path", "profile_path未配置，已自动使用localstore默认data_dir"),
+    ("server_status", "server_status配置项未配置或不存在，已使用offline配置，会影响插件正常运行，请及时配置！"),
+    ("address_intranet", "服务器内网地址未配置"),
+    ("address", "服务器地址未配置"),
+]
+
+for key, warn_msg in config_checks:
+    value = getattr(uc, key)
+    if not value or (isinstance(value, str) and value.strip() == ""):
+        logger.warning(warn_msg)
+    else:
+        logger.info(f"{key}:{value}")
+
+if not uc.administrator_id:
     logger.info("管理员未配置")
 else:
     logger.info(f"administrator_id:{uc.administrator_id}")
-

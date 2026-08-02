@@ -10,158 +10,124 @@
 
 ![GitHub License](https://img.shields.io/github/license/leaf2006/nonebot-plugin-mc-whitelist-controller?style=flat-square)
 ![GitHub last commit](https://img.shields.io/github/last-commit/leaf2006/nonebot-plugin-mc-whitelist-controller?style=flat-square)
-![GitHub last commit](https://img.shields.io/github/last-commit/leaf2006/nonebot-plugin-railwaytools?style=flat-square)
 ![PyPI - Version](https://img.shields.io/pypi/v/nonebot-plugin-mc-whitelist-controller?style=flat-square)
 
-
- _✨一个控制管理Minecraft服务器白名单的机器人插件✨_
+✨一个通过 QQ 管理 Minecraft 服务器白名单的 NoneBot2 插件✨
 
 </div>
 
- <!-- > [!NOTE]
- > 该项目目前还处于开发中，还不属于完全体，还不是很稳定！ -->
+## 📖 简介
 
+将 Minecraft 玩家 ID 与 QQ 号绑定，在 QQ 中完成白名单注册与注销，并实现对服务器内玩家的追根溯源。支持正版（online）与离线（offline）服务器，注册记录会持久化到本地 JSON 文件，供管理员随时查看。
 
-## 📖 介绍
+> [!IMPORTANT]
+> 使用前请务必阅读「使用前配置」与「Bot 配置」两部分内容。插件正常工作需要你对 MC 服务器做少量配置，并为 Bot 填写必要的配置项。
 
-这是一个控制管理Minecraft服务器白名单的机器人插件，将mc服务器中的玩家id与QQ号绑定，实现对服务器内所有玩家的追根溯源，支持正版服务器和离线服务器。本插件可以在QQ中将玩家id注册入服务器白名单，同时会生成一个包含每个玩家id与其绑定的QQ号信息的json文件，供服务器管理员参看。
+## 功能特性
 
-**在使用前，请务必仔细阅读README.md中的“使用前配置”与“Bot配置”内容，以免出现问题。让这个Bot达到应有的效果，需要你对你的mc服务器进行一些配置，并且给Bot填写一些必填的首选项。**
+- 在 QQ 中注册 / 注销玩家白名单，自动绑定发送者的 QQ 号
+- 自动生成并维护玩家 ID 与 QQ 号的绑定文件
+- 支持正版（online）与离线（offline）服务器
+- 管理员可查看全部已注册玩家的 ID 与 QQ 信息
+- 查询服务器实时状态与在线玩家列表
 
 ## 🔨 依赖
 
 - Python >= 3.9
-
-需要安装以下依赖库：
-
+- nonebot2 + nonebot-adapter-onebot
 - httpx >= 0.22.0
-
 - nonebot-plugin-localstore >= 0.7.4
+
+本插件涉及到修改MC服务端的文件，因此MC服务端与Nonebot必须在同一机器内运行
 
 ## 💿 安装
 
-<details open>
-<summary>使用pip安装</summary>
-在nonebot2项目插件目录下，打开命令行，输入以下安装命令
+**方式一：pip 安装**
 
-    pip install nonebot-plugin-mc-whitelist-controller
+在 nonebot2 项目目录下执行：
 
-</details>
+```bash
+pip install nonebot-plugin-mc-whitelist-controller
+```
 
-<details>
-<summary>使用git clone安装</summary>
-可以将本项目克隆到你已经建立好的Nonebot机器人的目录内，并在project.toml中配置好本插件的安装目录
-    
-    git clone https://github.com/leaf2006/nonebot-plugin-mc-whitelist-controller.git
+**方式二：git clone 安装**
 
-</details>
+克隆到已建好的 NoneBot 项目目录，并在 `pyproject.toml` 中配置插件安装路径：
 
+```bash
+git clone https://github.com/leaf2006/nonebot-plugin-mc-whitelist-controller.git
+```
 
-## ⚠️使用前配置
+## ⚠️ 使用前配置
 
-**这部分内容很重要，跟Bot配置一样重要！因为在一般情况下，mc服务器的白名单在更新后是不会立刻生效的，在什么都不做的情况下，需要你在服务器中输入`/whitelist reload`指令才会使更改后的白名单生效。这里就需要做一些操作让服务器自动重载白名单**
+白名单文件更新后不会立即生效，需要在服务器中执行 `/whitelist reload` 才会重新加载。请选择以下任一方式让服务器自动重载白名单：
 
-- **给服务器添加定时/计划任务，定期执行`/whitelist reload`指令（最简单，推荐）**
+- **定时任务（推荐）**：大多数控制面板 / 面板服都支持定时任务。添加一个每 900 秒（15 分钟）执行一次 `/whitelist reload` 的任务即可。
 
-很多人会选择使用服务器控制面板或租用面板服，大部分的面板或面板服都支持添加定时/计划任务。可以添加一个任务，每900秒（15分钟）执行一次`/whitelist reload`指令，实现定时自动重载白名单的功能。
+  ![server-timer](https://raw.githubusercontent.com/leaf2006/image/master/img/server-timer.png)
 
-![server-timer](https://raw.githubusercontent.com/leaf2006/image/master/img/server-timer.png)
+- **白名单监听 Mod（试验性）**：作者维护的 [Minecraft Whitelist Watcher](https://github.com/leaf2006/minecraft-whitelist-watcher-mod) Fabric Mod 会在白名单文件变动时自动重载，目前支持的 MC 版本较少，仍在持续更新。
 
-- **给服务器添加智能重载白名单mod（最智能，还在试验）**
+## ⚙️ Bot 配置
 
-我同时为该插件编写了一个基于Fabric的mod：<a href="https://github.com/leaf2006/minecraft-whitelist-watcher-mod">Minecraft Whitelist Watcher</a> ，这个专为Fabric服务端的mod可以实现实时监视白名单，白名单文件内容发生变动时会自动为服务器重载白名单。但这个mod仍在开发，目前支持的mc版本较少，本人正在尽快更新使其支持更多版本。
+插件基于 [nonebot-plugin-localstore](https://github.com/nonebot/plugin-localstore) 存储配置文件 `config.json`，默认位置：
 
+- Windows：`C:\Users\<username>\AppData\Roaming\nonebot2\nonebot_plugin_mc_whitelist_controller`
+- Linux：`~/.config/nonebot2/nonebot_plugin_mc_whitelist_controller`
 
-## ⚙️ Bot配置
+不确定位置时，可在 Bot 根目录执行 `nb localstore` 查看。
 
-在配置之前，我建议您在实装完插件后先`nb run`一下Bot，然后再关掉
-
-本插件使用<a href="https://github.com/nonebot/plugin-localstore">**nonebot-plugin-localstore**</a>插件存储配置文件，本插件配置文件名为`config.json`，一般来说，本插件的配置文件会位于：
-
-- Windows:`C:\Users\<username>\AppData\Roaming\nonebot2\nonebot_plugin_mc_whitelist_controller`
-- Linux:`~/.config/nonebot2/nonebot_plugin_mc_whitelist_controller`
-
-如果还是不清楚在哪里，可以在Bot根目录执行`nb localstore`命令查看。
-
-如果您按照上述步骤，在配置前已经运行过一次Bot了的话，本插件会自动在上述目录里创建`config.json`文件，并已在文件内创建了模板，您可以前往上述目录，打开该文件填写相关配置项了。如果上述目录内没有该文件，您可以手动创建`config.json`文件，**并按照一下要求配置**：
+首次运行 Bot 后，插件会自动在上述目录生成 `config.json` 模板；若未生成，可手动创建并按以下字段填写：
 
 | 配置项 | 必填 | 默认值 | 说明 |
 |:-----:|:----:|:----:|:----:|
-| whitelist_path | 是 | 无 | 服务器whitelist.json的绝对路径 |
-| profile_path | 否 | 无 | 存放玩家id和QQ号的文件的绝对路径（若不存在该文件会自动创建），如果未填该配置会自动依据localstore在默认的目录内创建一个profile.json |
-| server_status | 否 | offile | 填写服务器状态（正版/离线服务器）：online/offline |
-| administrator_id | 否 | [ ] | 本插件管理员账户QQ号，可以查看玩家信息，可设置多个管理员 |
-
-- 配置文件json模板
+| whitelist_path | 是 | 无 | 服务器 whitelist.json 的绝对路径 |
+| profile_path | 否 | 无 | 玩家 ID 与 QQ 绑定文件路径（不存在会自动创建），留空时使用 localstore 默认目录 |
+| server_status | 否 | offline | 服务器类型：online（正版）/ offline（离线） |
+| administrator_id | 否 | [] | 管理员 QQ 号，可配置多个，用于「玩家列表」等管理指令 |
+| address_intranet | 否 | 127.0.0.1:25565 | 服务器内网地址，用于在「服务器信息」中查询 |
+| address | 否 | 无 | 服务器地址，用于在「服务器信息」中展示
 
 ```json
-// config.json
-
 {
-	"whitelist_path": "",
-	"profile_path": "profile.json",
-	"server_status": "offline",
-	"administrator_id": []
+    "whitelist_path": "C:\\Users\\Minecraft\\whitelist.json",
+    "profile_path": "",
+    "server_status": "offline",
+    "administrator_id": [1111111111, 2222222222],
+    "address_intranet": "127.0.0.1:25565",
+    "address": "example.org"
 }
 ```
 
-- whitelist_path配置示例：
-```json
-// config.json
-// 本示例中给出的地址为虚构地址，仅供演示
-"whitelist_path": "C:\\Users\\Minecraft\\whitelist.json"
-```
+> [!IMPORTANT]
+> 填写文件路径时请使用 `/` 或 `\\` 作为分隔符，不要使用单个 `\`，避免解析出错。
+> profile_path 的路径末尾必须包含文件名（即使该文件尚未创建）。
 
->[!IMPORTANT]
->填写该配置项，以及下面的profile_path配置项时，请务必不要使用`\`分隔，改用``\\``或`/`，防止出错
+## 🚀 使用
 
-- profile_path配置示例：
-```json
-// config.json
-// 本示例中给出的地址为虚构地址，仅供演示
-"PROFILE_PATH": "C:\\Users\\Minecraft\\profile.json"
-```
-此处profile_path可以是绝对路径内的任意路径，但是在路径最后必须包括文件名，即使这个文件还未被创建。在本插件如果不配置该配置项，则会根据localstore在以下位置默认创建一个profile.json：
+### 指令列表
 
-Windows:`C:\Users\<username>\AppData\Local\nonebot2\nonebot_plugin_mc_whitelist_controller`
-
-Linux:`~/.local/share/nonebot2/nonebot_plugin_mc_whitelist_controller`
-
-- administrator_id配置实例：
-```json
-// config.json
-// 本示例中给出QQ号为虚构QQ号，仅供演示
-"administrator_id": [1111111111,2222222222]
-```
-
-## 🎉 使用
-### 指令表
-| 指令 | 权限 | 需要@ | 范围 | 说明 |
+| 指令 | 权限 | 需要 @ | 范围 | 说明 |
 |:-----:|:----:|:----:|:----:|:----:|
-| /注册 或 /register + [玩家id] | 群员 | 否 | 群聊 | 向服务器白名单注册玩家信息 |
-| /注销 或 /unregister + [玩家id] | 群员 | 否| 群聊 | 注销已注册的玩家信息 |
-| /指令列表 | 群员 | 否 | 群聊 | 查看指令列表 |
-| /玩家列表 | 注册管理员 | 是 | 私聊或群聊@ | 查看玩家信息，仅已在配置文件中注册过的管理员可用 |
+| /注册 或 /register + [玩家id] | 群员 | 否 | 群聊 | 注册玩家并绑定当前 QQ 号 |
+| /注销 或 /unregister + [玩家id] | 群员 | 否 | 群聊 | 注销玩家，仅限本人或管理员 |
+| /指令列表 | 群员 | 否 | 群聊 | 查看帮助信息 |
+| /服务器信息 或 /server_info | 群员 | 否 | 群聊 | 查看服务器状态与在线玩家 |
+| /玩家列表 或 /list | 管理员 | 是 | 私聊 / 群聊 | 查看全部已注册玩家的 ID 与 QQ |
 
+### 使用效果
 
->[!IMPORTANT]
->在首次使用本插件前，或切换过server_status参数后，请务必手动清除whitelist.json中除"[]"号外的所有内容，防止出现错误
-
-### 效果
-
-场景：当你向机器人注册玩家id：
+注册玩家 `leaf2006`：
 
 ```
-example:
 🤵：/注册 leaf2006
 🤖：成功注册玩家leaf2006到白名单！
 ```
 
-此时whitelist.json会自动添加以下语句：
+注册后，whitelist.json 会新增该玩家条目：
+
 ```json
 [
-    // whitelist.json
-    ...
     {
         "uuid": "dbc89c79-8236-36b0-b2cf-7dd0b9989b27",
         "name": "leaf2006"
@@ -169,28 +135,28 @@ example:
 ]
 ```
 
-此时profile.json会自动添加以下语句，包括注册者的玩家id与QQ号：
+同时 profile.json 会记录玩家 ID 与 QQ 号的绑定关系：
+
 ```json
 [
-    ...
-    // nonebot_plugin_mc_whitelist_controller/data/profile.json
     {
         "name": "leaf2006",
-        "qq": "此处代表该人的QQ号"
+        "qq": "此处为该玩家 QQ 号"
     }
 ]
 ```
 
-随后，在该白名单之外的玩家便无法进入服务器了，您也可以实现对服务器内所有玩家的追根溯源
+> [!IMPORTANT]
+> 首次使用本插件，或切换过 server_status 配置后，请先手动将 whitelist.json 清空为 `[]`，避免数据异常。
+>
+> 以上示例为离线服务器场景。
 
-*注：以上示例为离线服务器场景*
+## 📦 旧版本
 
-## 旧版版本
-
-下载或使用旧版版本请前往<a href="https://pypi.org/project/nonebot-plugin-mc-whitelist-controller/#history">Pypi</a>
+历史版本请前往 [PyPI](https://pypi.org/project/nonebot-plugin-mc-whitelist-controller/#history) 查看。
 
 <div align="center">
 
-Copyright © Leaf developer 2023-2026，遵循MIT开源协议
+Copyright © Leaf developer 2023-2026，遵循 MIT 开源协议
 
 </div>

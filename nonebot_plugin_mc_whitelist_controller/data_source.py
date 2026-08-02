@@ -18,7 +18,9 @@ class user_config:
             "whitelist_path": "",
             "profile_path": "",
             "server_status": "offline",
-            "administrator_id": []
+            "administrator_id": [],
+            "address_intranet": "127.0.0.1:25565",
+            "address": ""
         }
         config_file_path.write_text(json.dumps(default_data, ensure_ascii=False, indent=4), encoding="utf-8")
     else:
@@ -27,16 +29,18 @@ class user_config:
     content = config_file_path.read_text(encoding='utf-8')
     config_file = json.loads(content)
 
-    whitelist_path = config_file['whitelist_path']
+    whitelist_path = config_file.get('whitelist_path','')
 
-    profile_path_config = config_file['profile_path']
+    profile_path_config = config_file.get('profile_path','')
     if not profile_path_config or (isinstance(profile_path_config, str) and profile_path_config.strip() == ""):
         profile_path = str(data_file_path) # 转换为字符串
         
     else:
         profile_path = str(profile_path_config)
 
-    server_status = config_file['server_status']
-    administrator_id = config_file['administrator_id']
+    server_status = config_file.get('server_status','')
+    administrator_id = config_file.get('administrator_id','')
+    address_intranet = config_file.get('address_intranet', '') # 默认为127.0.0.1:25565，检测服务器信息时用这个
+    address = config_file.get('address','') # 服务器外网地址（展示用）
     
 
